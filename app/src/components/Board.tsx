@@ -1,3 +1,4 @@
+import { any } from "prop-types";
 import { useEffect, useRef, useState } from "react";
 import openSocket from "socket.io-client";
 import Tools from "./Tools";
@@ -11,7 +12,10 @@ import Tools from "./Tools";
 */
 
 // Setup a socket to express/socketio backend
-const socket = openSocket("http://localhost:3000");
+const socket = openSocket("http://localhost:3000", {
+    withCredentials: true
+});
+
 
 function Board() {
     const [selected, setSelected] = useState(true);             // Selected tool state

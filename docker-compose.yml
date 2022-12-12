@@ -1,0 +1,66 @@
+version: "3"
+
+volumes:
+  redis-data:
+    driver: local
+
+networks:
+  frontend-whiteboard:
+    name: frontend-whiteboard
+    driver: bridge
+  
+  backend-whiteboard:
+    name: backend-whiteboard
+    driver: bridge
+
+services:
+  ###############################################
+  ####            Frontend Setup            #####
+  ###############################################
+  whiteboard-frontend:
+    build:
+      context: app/
+      dockerfile: Dockerfile
+      args:
+        - BACKEND_HOST=http://localhost:3000
+    container_name: whiteboard-frontend
+    depends_on:
+      - whiteboard-backend
+    ports:
+      - "80:80"
+    networks:
+      - frontend-whiteboard
+      - backend-whiteboard
+
+  ###############################################
+  ####            Backend Setup             #####
+  ###############################################
+  whiteboard-backend:
+    build:
+      context: server/
+      dockerfile: Dockerfile
+    environment:
+      - FRONTEND_HOST=http://whiteboard-frontend
+      - REDIS_HOST=whiteboard-redis:6379
+    container_name: whiteboard-backend
+    depends_on:
+      - whiteboard-redis
+    ports:
+      - "3000:3000"
+    networks:
+      - backend-whiteboard
+
+  ###############################################
+  ####             Redis Setup              #####
+  ###############################################
+  whiteboard-redis:
+    image: redis:alpine
+    container_name: whiteboard-redis
+    restart: always
+    ports: 
+      - "6379:6379"
+    command: redis-server
+    volumes:
+      - redis-data:/var/lib/redis
+    networks:
+      - backend-whiteboard

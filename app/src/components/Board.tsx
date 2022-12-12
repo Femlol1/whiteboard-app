@@ -11,7 +11,7 @@ import Tools from "./Tools";
 */
 
 // Setup a socket to express/socketio backend
-const socket = openSocket("http://localhost:3000");
+const socket = openSocket(`${process.env.REACT_APP_BACKEND_HOST}`);
 
 function Board() {
     const [selected, setSelected] = useState(true);             // Selected tool state
@@ -25,7 +25,7 @@ function Board() {
 
     useEffect(() => {
         // Setting size of canvas
-        const canvas = canvasRef.current;
+        const canvas:any = canvasRef.current;
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
         canvas.style.width = `${window.innerWidth}px`;
@@ -49,7 +49,7 @@ function Board() {
            
             if (data != null) {
                 var image = new Image();
-                var canvas = document.querySelector("#board");
+                var canvas:any = document.querySelector("#board");
                 var ctx = canvas.getContext("2d");
                 image.onload = function () {
                     ctx.drawImage(image, 0, 0);
@@ -58,7 +58,7 @@ function Board() {
                 image.src = data;
 
             } else {
-                var canvas = document.querySelector("#board");
+                var canvas:any = document.querySelector("#board");
                 var ctx = canvas.getContext("2d");
                 context.clearRect(0, 0, canvas.width, canvas.height);
             }
